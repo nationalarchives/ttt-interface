@@ -1,0 +1,129 @@
+﻿$(function () {
+    // suggest an error form functionlity
+    var suggestForm = 'suggest-a-correction-form',
+        $suggectForm = $('#' + suggestForm);
+    if ($suggectForm.length) {
+        if (!$suggectForm.find('.field-validation-error').length) {
+            $.bindToggle({ toggler: '#show-suggestion-form', target: '.suggestion-form-wrapper' });
+        }
+        $suggectForm.submit(function () {
+            $suggectForm.find('#Hash').val(suggestForm);
+        });
+        if ($suggectForm.find('#Hash').val().length > 0) {
+            window.location.hash = suggestForm;
+        }
+    }
+    // staff view of other users delivery options functionlity
+    var $staffViewOfOtherUserDOs = $('#staffViewOfOtherUserDOs'),
+        staffOffText = 'View delivery options presented to other users',
+        staffOnText = 'Hide delivery options presented to other users';
+    if ($staffViewOfOtherUserDOs.find('> div').length) {
+        $staffViewOfOtherUserDOs.hide();
+        $link = $('<a>', {
+            'href': '#',
+            'text': staffOffText,
+            'class': 'discoveryPrimaryCallToActionLink',
+            'click': function () {
+                $staffViewOfOtherUserDOs.slideToggle();
+                if ($link.text() === staffOffText) {
+                    $link.text(staffOnText);
+                } else {
+                    $link.text(staffOffText);
+                }
+            }
+        }).appendTo($('#staffViewOfOtherUserDOsWrapper'));
+    }
+    // image viewer boot strap code
+    var $imageViewerLink = $("#imageViewerLink"),
+        $imageViewerApp = $("#imageViewerApp"),
+        offText = 'Show images',
+        onText = 'Hide images';
+    isBootstrapped = false;
+    $imageViewerLink.text(offText);
+    $('.image-info').hide();
+    $imageViewerLink.on("click touchstart", function (e) {
+        $('.image-info').toggle();
+        var iaid = $imageViewerLink.attr('data-iaid') || 0,
+            thumbServiceUrl = $imageViewerLink.attr('data-thumbServiceUrl') || '';
+        if ($imageViewerLink.text() === offText) {
+            if (!isBootstrapped) {
+                isBootstrapped = true;
+                angular.module('imageViewerApp');
+                $imageViewerApp.show();
+                angular.bootstrap(document.getElementById('imageViewerApp'), ['imageViewerApp']);
+            } else {
+                $imageViewerApp.show();
+            }
+            $imageViewerLink.text(onText);
+            return;
+        }
+        $imageViewerLink.text(offText);
+        $imageViewerApp.hide();
+        if(!Modenizr.hashchange) {
+            e.preventDefault();
+            return;
+        }
+    });
+
+    // Toggling the asset details on Name Authority details page
+    (function () {
+        $details = $('#name-authority .asset-details');
+        $details.hide();
+
+        var sp = $('<button>', {
+            'text': 'View details of this record creator',
+            'class': 'call-to-action-link',
+            'click': function () {
+                if ($details.is(':visible')) {
+                    $(this).text('View details of this record creator');
+                } else {
+                    $(this).text('Hide details of this record creator');
+                }
+                $details.toggle();
+            }
+        }).css({
+            'float' : 'right'
+        });
+
+        $details.after(sp);
+    })();
+});
+
+$(document).ready(function () {
+    $supplemental = $('.supplemental-content');
+    $expander = $('.expander-link');
+    $supplemental.hide();
+
+    $expander.on('click', function (e) {
+        e.preventDefault();
+        $(this).toggleClass('expanded');
+        $supplemental.toggle();
+    });
+
+});
+
+// Traces through time
+
+// Show all text
+var showAll = '<p class="center"><a id="show-all">Show all matches</a></p>';
+
+// Number of matches
+var numItems = $('.ttt-item').length;
+
+$(document).ready(function () {
+
+	// Show first three matches by default
+	$('.ttt-item').hide();
+	$('.ttt-item:lt(3)').show();
+
+	// Only append show all if more than 3 matches are present
+	if (numItems > 3) {
+		$('#traces-through-time-collection').append(showAll);
+	}
+
+	// Show all matches when select all link is clicked
+	$("#show-all").on("click", function () {
+		$('.ttt-item').show();
+		$(this).hide();
+	});
+});
